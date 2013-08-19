@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<title>{{.Title}}</title>
+		<link rel="stylesheet" type="text/css" href="/style.css">
+	</head>
+
+	<body>
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="brand" href="#">{{.Brand}}</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="hero-unit">
+				<h1 style="margin-bottom: 20px;">{{.Title}}</h1>
+				<p>{{.Message}}</p>
+				<ul>
+					{{range .Links}}
+						<li><a href="{{.URL}}">{{.Name}}</a></li>
+					{{end}}		
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>
