@@ -90,7 +90,7 @@ body {
 
   margin-bottom: 20px;
   font-size: 15px;
-  font-weight: 200;
+  font-weight: 300;
   line-height: 30px;
 
   display: inline-block;
@@ -135,7 +135,7 @@ body {
 
 @-webkit-keyframes glow /* Safari and Chrome */
 {
-  0% {box-shadow: -3px 3px 30px#AAA}
+  0% {box-shadow: -3px 3px 30px #AAA}
   50% {box-shadow: -3px 3px 30px #000}
   100% {box-shadow: -3px 3px 30px #AAA}
 }
