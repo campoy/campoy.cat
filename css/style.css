@@ -85,14 +85,16 @@ body {
 }
 
 .biglink {
+  width: 150px;
+  text-align: center;
+
   margin-bottom: 20px;
-  font-size: 12;
+  font-size: 15px;
   font-weight: 200;
   line-height: 30px;
 
   display: inline-block;
   color: black;
-  box-shadow: 3px 3px 3px #AAA;
   margin: 20px;
   padding: 20px;
   border: 20px;
@@ -108,5 +110,32 @@ body {
 
 .biglink:hover {
   text-decoration: none;
-  box-shadow: 3px 3px 3px #000;
+  color: black;
+}
+
+.glowing {
+    box-shadow: -3px 3px 30px  #AAA;
+}
+.glowing:hover {
+  animation-name:glow;
+  animation-duration:2s;
+  animation-iteration-count:infinite;
+  /* Safari and Chrome: */
+  -webkit-animation-name:glow;
+  -webkit-animation-duration:2s;
+  -webkit-animation-iteration-count:infinite;
+}
+
+@keyframes glow
+{
+  0% {box-shadow: -3px 3px 30px#AAA}
+  50% {box-shadow: -3px 3px 30px #000}
+  100% {box-shadow: -3px 3px 30px #AAA}
+}
+
+@-webkit-keyframes glow /* Safari and Chrome */
+{
+  0% {box-shadow: -3px 3px 30px#AAA}
+  50% {box-shadow: -3px 3px 30px #000}
+  100% {box-shadow: -3px 3px 30px #AAA}
 }
