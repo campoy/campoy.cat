@@ -1,0 +1,93 @@
+html, body {
+    font-family: "Open sans", Helvetica, Arial, sans-serif;
+    font-size: 50px;
+    margin: 0;
+    border: 0;
+    font-weight: 100;
+    background: #fa5;
+    min-height: 400px;
+}
+* {
+    color: #852;
+}
+span {
+    word-spacing: none;
+}
+.name {
+    padding: 200px 0 50px 0;
+    font-size: 100px;
+    color: white;
+    text-align: center;
+}
+.title {
+    text-align: center;
+}
+.logos {
+    position: absolute;
+    bottom: 50px;
+    font-size: 30px;
+    left: 0;
+    right: 0;
+    margin-bottom: 20px;
+}
+.logos a {
+    display: inline-block;
+    float: left;
+    width: 20%;
+    text-align: center;
+    text-decoration: none;
+}
+@media (max-height: 600px) {
+    .name {
+        padding: 50px 0;
+    }
+    .logos {
+        position: inherit;
+        margin-top: 250px;
+    }
+}
+@media (max-width: 1200px) {
+    .name {
+        font-size: 70px;
+    }
+}
+@media (max-width: 800px) {
+    .name {
+        padding-top: 50px;
+        font-size: 50px;
+    }
+    .title {
+        font-size: 40px;
+    }
+    .logos {
+        position: inherit;
+        margin-top: 20px;
+    }
+    .logos a {
+        display: block;
+        float: none;
+        width: 100%;
+        margin-top:15px;    }
+}
+@media (max-width: 540px) {
+    .name {
+        font-size: 30px;
+    }
+    .title {
+        font-size: 25px;
+    }
+    .logos a {
+        font-size: 20px;
+    }
+}
+@media (max-width: 320px) {
+    .name {
+        font-size: 25px;
+    }
+    .title {
+        font-size: 20px;
+    }
+    .logos a {
+        font-size: 20px;
+    }
+}
