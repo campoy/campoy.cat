@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"appengine"
-	"appengine/datastore"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/datastore"
+	"google.golang.org/appengine/log"
 )
 
 func init() {
@@ -19,8 +20,8 @@ func homeHandler(w http.ResponseWriter, r *http.Request) error {
 		Path string
 	}
 	path := r.URL.Path[1:]
-	c := appengine.NewContext(r)
-	it := datastore.NewQuery("link").Filter("Path=", path).Run(c)
+	ctx := appengine.NewContext(r)
+	it := datastore.NewQuery("link").Filter("Path=", path).Run(ctx)
 	_, err := it.Next(&link)
 	if err != nil {
 		return fmt.Errorf("finding link %q: %v", path, err)
@@ -34,7 +35,8 @@ func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.Handler
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := f(w, r)
 		if err != nil {
-			appengine.NewContext(r).Errorf("handling %q: %v", r.URL.Path, err)
+			ctx := appengine.NewContext(r)
+			log.Errorf(ctx, "handling %q: %v", r.URL.Path, err)
 			http.Redirect(w, r, "/", http.StatusMovedPermanently)
 			return
 		}
