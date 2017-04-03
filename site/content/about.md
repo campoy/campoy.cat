@@ -9,8 +9,8 @@ I have a passion for developer relations, specifically when it comes to Go.
 I've been working closely with the Go team at Google since 2012, and my
 goal has always been to make the language as accessible as possible to everyone.
 
-The Go Developer Relations team was absorved by the Cloud team, and I ended up
-applying my previous strategy to Cloud Computing.
+The Go Developer Relations team joined the Google Cloud Advocacy team,
+and I ended up applying my previous strategy to Cloud Computing.
 
 In this page you will find the projects I've worked on, such as
 the [Google Cloud Platform Podcast](http://gcppodcast.com) where I co-host next

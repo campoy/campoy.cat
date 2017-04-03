@@ -8,6 +8,17 @@ handlers:
   static_files: site/public/index.html
   upload: site/public/index.html
   secure: always
+
+- url: /blog
+  static_files: site/public/blog/index.html
+  upload: site/public/blog/index.html
+  secure: always
+
+- url: /blog/(.*)/
+  static_files: site/public/blog/\1/index.html
+  upload: site/public/blog/(.*)/index.html
+  secure: always
+
 - url: /
   static_dir: site/public/
   secure: always

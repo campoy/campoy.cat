@@ -3,6 +3,10 @@ languageCode = "en-us"
 title = "Francesc Campoy Flores"
 theme = "introduction"
 
+[permalinks]
+fixed = ":title/"
+blog  = "blog/:slug/"
+
 [params]
 author = "FrancescCampoy Flores"
 firstname = "Francesc"
@@ -18,10 +22,10 @@ lang = "en"
 footertext = ""
 
 # Social icons appear in introduction and contact section. Input your username only, eg "you" as it appears in "twitter.com/you"
-linkedin      = "https://www.linkedin.com/in/campoy/"
-twitter       = "https://twitter.com/francesc"
-github        = "https://github.com/campoy"
-googleplus    = "https://plus.google.com/+FrancescCampoyFlores"
+linkedin      = "campoy/"
+twitter       = "francesc"
+github        = "campoy"
+googleplus    = "FrancescCampoyFlores"
 codepen       = ""
 pinterest     = ""
 facebook      = ""
