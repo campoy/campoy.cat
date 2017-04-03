@@ -4,17 +4,13 @@ runtime: go
 api_version: go1
 
 handlers:
-- url: /static
-  static_dir: static
-  secure: always
-- url: /favicon.ico
-  static_files: static/identicon.png
-  upload: static/identicon.png
+- url: /
+  static_files: site/public/index.html
+  upload: site/public/index.html
   secure: always
 - url: /
-  static_files: static/home.html
-  upload: static/home.html
+  static_dir: site/public/
   secure: always
-- url: /.*
-  script: _go_app
-  secure: always
+# - url: /l/.*
+#   script: _go_app
+#   secure: always

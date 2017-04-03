@@ -1,0 +1,47 @@
+# baseURL = "https://campoy.cat/"
+languageCode = "en-us"
+title = "Francesc Campoy Flores"
+theme = "introduction"
+
+[params]
+author = "FrancescCampoy Flores"
+firstname = "Francesc"
+tagline = "Gopher, Developer Advocate, Good Guy"
+avatar = "img/profile.jpg"
+dateform = "Jan 2, 2006"
+dateformfull = "Mon January 2 2006"
+cachebuster = true
+description = "Francesc's home page"
+# faviconfile = "img/fav.ico"
+highlightjs = true
+lang = "en"
+footertext = ""
+
+# Social icons appear in introduction and contact section. Input your username only, eg "you" as it appears in "twitter.com/you"
+linkedin      = "https://www.linkedin.com/in/campoy/"
+twitter       = "https://twitter.com/francesc"
+github        = "https://github.com/campoy"
+googleplus    = "https://plus.google.com/+FrancescCampoyFlores"
+codepen       = ""
+pinterest     = ""
+facebook      = ""
+
+showblog        = true # Show Blog section on home page
+showallposts    = false # Set 'true' to list all posts on home page, or set 'false' to link to separate blog list page
+showlatest      = true # Show latest blog post summary
+sharebuttons    = true # On post pages, show share this social buttons
+
+showprojects    = true # Show Projects section on home page
+
+# This is your projects section. Three images of the same dimensions will look the nicest. If images are omitted, text links will be shown.
+project1link    = "https://youtube.com/c/justforfunc"
+project1img     = "img/justforfunc.png"
+project1title   = "justforfunc"
+
+project2link    = "https://gcppodcast.com"
+project2img     = "img/gcppodcast.png"
+project2title   = "Google Cloud Platform Podcast"
+
+project3link    = "https://github.com/campoy/embedmd"
+project3img     = "img/embedmd.png"
+project3title   = "embedmd"
