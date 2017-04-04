@@ -6478,8 +6478,11 @@ img {
 
 @media screen and (max-width: 768px) {
     .bold-title {
-        font-size: 4em;
+        font-size: 3em;
         text-align: center
+    }
+    .subtitle.is-3 {
+        font-size: 1.4rem
     }
 }
 
@@ -6537,6 +6540,19 @@ img {
 .social-icons .fa {
     font-size: 2em;
     padding: 0 10px
+}
+
+@media screen and (max-width: 768px) {
+    .social-icons .fa {
+        padding: 0 5px
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .social-icons .fa {
+        font-size: 1.5em;
+        padding: 0 5px
+    }
 }
 
 .footer-text {
@@ -6668,3 +6684,4 @@ img {
 #nav-toggle-state:checked ~ .nav-menu {
     display: block
 }
+
