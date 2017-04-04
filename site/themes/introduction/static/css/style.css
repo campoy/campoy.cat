@@ -6685,10 +6685,23 @@ img {
     display: block
 }
 
+#projects .thumbnail {
+    max-width: 400px;
+    margin: auto;
+}
+
 .project-desc {
     margin-top: 5px;
     padding: 10px;
     text-align: justify;
+}
+
+
+@media screen and (max-width: 768px) {
+    #projects .columns {
+       -webkit-flex-direction: column;
+       flex-direction: column;
+    }
 }
 
 .summary {

@@ -18,7 +18,7 @@
     <div class="container"><!-- Begin Blog container -->
 
     {{ if .Site.Params.showlatest }}
-    <h2 class="title is-2 top-pad">Latest Post</h2>
+    <h2 class="title is-2 top-pad">Latest Posts</h2>
         {{ range first 3 .Data.Pages.ByPublishDate }} 
         <div class="summary">{{ .Date.Format .Site.Params.dateform }}
             <h3 class="title is-3 strong-post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
