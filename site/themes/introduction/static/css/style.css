@@ -6685,3 +6685,8 @@ img {
     display: block
 }
 
+.project-desc {
+    margin-top: 5px;
+    padding: 10px;
+    text-align: justify;
+}

@@ -41,11 +41,14 @@ showprojects    = true # Show Projects section on home page
 project1link    = "https://youtube.com/c/justforfunc"
 project1img     = "img/justforfunc.png"
 project1title   = "justforfunc"
+project1desc    = "Tune in on YouTube every two weeks to see me hacking with Go and Cloud technologies while cracking amazing jokes (imo)."
 
 project2link    = "https://gcppodcast.com"
 project2img     = "img/gcppodcast.png"
 project2title   = "Google Cloud Platform Podcast"
+project2desc    = "Every Wednesday morning Mark and I release a new episode of GCPPodcast, the podcast where we talk about Cloud technologies with interesting people from the community."
 
 project3link    = "https://github.com/campoy/embedmd"
 project3img     = "img/embedmd.png"
 project3title   = "embedmd"
+project3desc    = "A simple tool that embeds code into your Markdown files from any other files, and keeps everything in sync."
