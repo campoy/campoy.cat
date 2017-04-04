@@ -14,7 +14,7 @@
     </div><!-- End Nav bar -->
 
     <div class="container fade-in two"><!-- Begin blog title container -->
-        <h2 class="title is-1 top-pad strong-post-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+        <h2 class="title is-1 top-pad strong-post-title">{{ .Title }}</h2>
             <div class="post-data">
                 {{ .Date.Format .Site.Params.dateform }} |
                 {{ if eq 1 .ReadingTime }}{{ .ReadingTime }} minute read{{ else }}{{ .ReadingTime }} minutes read{{ end }}
