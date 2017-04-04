@@ -76,7 +76,7 @@ td, th {
 
 html {
     background-color: #fff;
-    font-size: 14px;
+    font-size: 18px;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     min-width: 300px;
@@ -96,12 +96,11 @@ body, button, input, select, textarea {
 code, pre {
     -moz-osx-font-smoothing: auto;
     -webkit-font-smoothing: auto;
-    font-family: monospace
+    font-family: "Fira Mono", monospace
 }
 
 body {
     color: #4a4a4a;
-    font-size: 1rem;
     font-weight: 400;
     line-height: 1.5
 }
@@ -119,9 +118,9 @@ a:hover {
 }
 
 code {
-    background-color: #f5f5f5;
-    color: #ff3860;
-    font-size: 0.8em;
+    background-color: #fafafa;
+    color: #00b8d4;
+    font-size: 0.9em;
     font-weight: normal;
     padding: 0.25em 0.5em 0.25em
 }
@@ -6422,7 +6421,6 @@ a.panel-block:hover, label.panel-block:hover {
 }
 
 body {
-    font-size: 14px;
     font-family: Open Sans, sans-serif;
     color: #666
 }
@@ -6474,7 +6472,7 @@ img {
 }
 
 .bold-title {
-    font-size: 8em;
+    font-size: 6em;
     font-weight: 700
 }
 
