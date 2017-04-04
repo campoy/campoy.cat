@@ -6360,7 +6360,7 @@ a.panel-block:hover, label.panel-block:hover {
 
 .section {
     background-color: #fff;
-    padding: 3rem 1.5rem
+    padding: 1rem 1.5rem
 }
 
 @media screen and (min-width: 1000px) {
@@ -6689,4 +6689,8 @@ img {
     margin-top: 5px;
     padding: 10px;
     text-align: justify;
+}
+
+.summary {
+    margin-top: 3rem;
 }

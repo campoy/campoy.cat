@@ -16,6 +16,8 @@ In this post I'd like to cover how to:
 
 This post is a written adaptation of an episode of my YouTube series [justforfunc](https://www.youtube.com/watch?v=LSzR0VEraWw).
 
+<!--more-->
+
 #### A bit of history
 
 Even though the `context` package was added to Go's standard library with Go 1.7, the package has a long history.

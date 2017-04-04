@@ -2,15 +2,14 @@
 
 <div class="section" id="top"><!-- Parent section -->
 
-    <div class="container hero fade-in one"><!-- Begin Title -->
-    <h1 class="bold-title is-1">{{ .Site.Params.firstname }}'s Blog</h1>
-    </div><!-- End Title -->
+    {{ partial "navigation.html" . }}
 
 <!-- Everything below fades in two! -->
 <div class="section fade-in two">
 
     <div class="container"><!-- Begin Nav bar -->
-    {{ partial "nav-single.html" . }}
+
+
     </div><!-- End Nav bar -->
 
     <div class="container fade-in two"><!-- Begin blog title container -->

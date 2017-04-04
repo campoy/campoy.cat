@@ -1,23 +1,25 @@
+<!-- 
+    Hey! Thanks for looking at my code! You win a cookie. :) The nice kind with chocolate chips, not the sneaky spying kind.
+
+    This page was originally created for the Personal Portfolio Webpage challenge on FreeCodeCamp's Front End Development Certification course. It's totally responsive, and the first web page I ever coded from scratch.
+
+    Enjoy, and I hope you find what you're looking for! If you have questions or want to get in touch, please do: hello@vickylai.com.
+-->
+
 {{ partial "header.html" . }}
 
-<div class="section" id="top"><!-- Parent section -->
+<div class="section" id="top"> <!-- Where all the awesome begins -->
 
-    <div class="container hero fade-in one"><!-- Begin Title -->
-    <h1 class="bold-title is-1">{{ .Site.Params.firstname }}'s Blog</h1>
-    </div><!-- End Title -->
+{{ partial "navigation.html" . }}
 
     <!-- Everything below fades in two! -->
-    <div class="section no-padding fade-in two">
+    <div class="section no-padding fade-in three">
 
-    <div class="container"><!-- Begin Nav bar -->
-    {{ partial "nav-list.html" . }}
-    </div><!-- End Nav bar -->
-       
     <div class="container"><!-- Begin Blog container -->
 
     {{ if .Site.Params.showlatest }}
     <h2 class="title is-2 top-pad">Latest Post</h2>
-        {{ range first 1 .Data.Pages.ByPublishDate }} 
+        {{ range first 3 .Data.Pages.ByPublishDate }} 
         <div class="summary">{{ .Date.Format .Site.Params.dateform }}
             <h3 class="title is-3 strong-post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
                 <div class="markdown">
