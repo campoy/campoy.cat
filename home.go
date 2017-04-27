@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
@@ -19,8 +20,8 @@ func homeHandler(w http.ResponseWriter, r *http.Request) error {
 		Name string
 		Path string
 	}
-	path := r.URL.Path[1:]
 	ctx := appengine.NewContext(r)
+	path := strings.TrimPrefix(r.URL.Path[1:], "l/")
 	it := datastore.NewQuery("link").Filter("Path=", path).Run(ctx)
 	_, err := it.Next(&link)
 	if err != nil {
