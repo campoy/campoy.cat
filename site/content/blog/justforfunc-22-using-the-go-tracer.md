@@ -39,7 +39,7 @@ func main() {
 In this first iteration `createSeq`, which calls `pixel`
 to compute the color of each pixel, one after the other.
 
-[embedmd]:# (main.go /func createSeq/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createSeq/ /^}/)
 ```go
 func createSeq(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
@@ -57,7 +57,7 @@ us to compute the color of a given pixel. The `complexity` value
 determines how complex the fractal gets, values from 4 to 2048 give
 various and interesting effects. Play with this!
 
-[embedmd]:# (main.go /func pixel/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func pixel/ /^}/)
 ```go
 func pixel(i, j, width, height int) color.Color {
 	// Play with this constant to increase the complexity of the fractal.
@@ -270,7 +270,7 @@ create over four million goroutines. We say goroutines are cheap ... so let's se
 
 The function that creates a goroutine per pixel is called `createdPixel`:
 
-[embedmd]:# (main.go /func createPixel/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createPixel/ /^}/)
 ```go
 func createPixel(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
@@ -342,7 +342,7 @@ Ok, so one goroutine is too many, but four millions is too much. Let's go right 
 go with one goroutine per row. This time we'll call `createRow` which creates a goroutine per
 row, so "only" 2048 of them.
 
-[embedmd]:# (main.go /func createRow/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createRow/ /^}/)
 ```go
 func createRow(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
@@ -398,7 +398,7 @@ If you've written enough Go, you migh have encountered the "workers" pattern, wh
 number of workers (eight in this case) which fetch tasks from a channel. We also use a `sync.WaitGroup`
 to make sure all workers are done before exiting.
 
-[embedmd]:# (main.go /func createWorkers/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createWorkers/ /^}/)
 ```go
 func createWorkers(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
@@ -481,7 +481,7 @@ Buffered channels in this case will make most of the send and receive operations
 You don't trust me? You don't need to. Let's modify the program to use a channel with a buffer
 of a size that allows us to fit all of the pixels.
 
-[embedmd]:# (main.go /func createWorkersBuffered/ /make\(chan.*/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createWorkersBuffered/ /make\(chan.*/)
 ```go
 func createWorkersBuffered(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
@@ -524,7 +524,7 @@ over 4 million times in this program.
 It seems like a good idea to limit this cost by creating fewer tasks. How can we even do that?
 Each task should be larger: let's create a task per row.
 
-[embedmd]:# (main.go /func createRowWorkers/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createRowWorkers/ /^}/)
 ```go
 func createRowWorkers(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
