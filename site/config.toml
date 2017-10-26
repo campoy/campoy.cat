@@ -5,7 +5,7 @@ theme = "introduction"
 
 [permalinks]
 fixed = ":title/"
-blog  = "blog/:slug/"
+blog  = "blog/:filename/"
 
 [params]
 author = "FrancescCampoy Flores"
