@@ -1,6 +1,6 @@
 +++
-date = "2017-10-23T00:00:00-00:00"
-title = "Using the Go tracer to speed up fractal making"
+date = "2017-10-30T00:00:00-00:00"
+title = "Using the Go exeuction tracer to speed up fractal rendering"
 tags = ["justforfunc", "performance", "go"]
 +++
 
@@ -10,15 +10,15 @@ you can also watch the corresponding episode.
 
 <div style="text-align:center">
     <a href="https://www.youtube.com/watch?v=ySy3sR1LFCQ&feature=youtu.be&list=PL6">
-        <img src="https://img.youtube.com/vi/ySy3sR1LFCQ/0.jpg" alt="justforfunc 22: using the Go tracer">
-        <p>justforfunc 22: using the Go tracer</p>
+        <img src="https://img.youtube.com/vi/ySy3sR1LFCQ/0.jpg" alt="justforfunc 22: using the Go execution tracer">
+        <p>justforfunc 22: using the Go execution tracer</p>
     </a>
 </div>
 
 
 ## The initial program
 
-We start with a very simple program, copied partly from Wikipedia, that creates a Mandelbrot fractal by
+We start with a very simple program, copied partly from [Wikipedia](https://en.wikipedia.org/wiki/Mandelbrot_set), that creates a Mandelbrot fractal by
 first computing the color of each pixel, and then writing the corresponding image to a PNG file.
 
 ```go
@@ -90,7 +90,7 @@ $ time ./mandelbrot
 
 The resulting image is this cool fractal.
 
-![mandelbrot fractal](out.png)
+![mandelbrot fractal](img/tracer/out.png)
 
 ## Can we make it faster? pprof
 
@@ -206,7 +206,7 @@ We have a better idea of what our program spends most of the time: computing pix
 But what do we do now? It seems reasonable that a program that generates fractals spends
 most of the time, well ... generating fractals!
 
-There's things we could do to try and optimiza the CPU time, but in this post instead of going
+There's things we could do to try and optimize the CPU time, but in this post instead of going
 that way, we're going to see what other things we can do to speed up the program without
 changing the `pixel` function.
 
@@ -217,7 +217,7 @@ of code is running. It allows us to understand what the program is running when 
 what about when it's not? We're missing information that we can not (or at least not easily) extract
 from a pprof trace.
 
-The Go tracer, rather than pinging the program regularily to understand what it is up to, it instead
+The Go execution tracer, rather than pinging the program regularily to understand what it is up to, it instead
 hooks to the Go runtime to log every single event we care about. These events include:
 
 - go routine creation and destruction
@@ -225,7 +225,7 @@ hooks to the Go runtime to log every single event we care about. These events in
 - system calls
 - etc
 
-The most powerful side of the Go tracer is the amazing visualization it generates, which allows us
+The most powerful side of the Go execution tracer is the amazing visualization it generates, which allows us
 to see the "empty" space in our program.
 
 Let's create a trace from this program, by simply replacing our `pprof` calls by calls to the `runtime/trace`
@@ -251,7 +251,7 @@ $ go tool seq.trace
 
 This will open a browser and display a webpage that, among others, has a link to `View Trace`. Click there and you should be something like this:
 
-![sequential trace](img/go-tracer/seq.png)
+![sequential trace](img/tracer/seq.png)
 
 I invite you to explore the visualization, specially the garbage collection event towards the end.
 But the most important point here is everything we can't see.
@@ -268,7 +268,7 @@ Let's go to a ridiculuous extreme and decide that, since each pixel can be compu
 we are going to create a goroutine per pixel. This, for our 2048x2048 image, means we're going to
 create over four million goroutines. We say goroutines are cheap ... so let's seee if that's true!
 
-The function that creates a goroutine per pixel is called `createdPixel`:
+The function that creates a goroutine per pixel is called `createPixel`:
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func createPixel/ /^}/)
 ```go
@@ -326,25 +326,98 @@ $ go tool trace px.trace
 The trace has been split into many pieces to avoid overloading the browser. Let's open one somewhere around
 the center. This, again, will be quite slow. Patience is your friend.
 
-![pixels trace](img/go-tracer/px.png)
+![pixels trace](img/tracer/px.png)
 
 It seems like the CPUs are *really* busy this time! But, let's zoom in a bit.
 
-![pixels trace zoom](img/go-tracer/px-zoom.png)
+![pixels trace zoom](img/tracer/px-zoom.png)
 
 Oh, that doesn't seem like it's very well utilized after all. We've created too many goroutines,
 which causes too much pressure on the runtime, both the scheduler and the garbage collector, and
 it shows as contention and wasted CPU time.
 
+### On go routines and dataraces
+
+Ok, so ... is this program correct? Are there any data races?
+The easiest way to show that there are no obvious data races is by using the data race detector.
+
+To do so you can simply add `-race` to the `go build|run|test` command. If you try it with the
+program as is it will fail:
+
+```bash
+$ go build -o mandelbrot -race
+$ time ./mandelbrot
+race: limit on 8192 simultaneously alive goroutines is exceeded, dying
+./mandelbrot  0.49s user 1.00s system 99% cpu 1.483 total
+```
+
+There's a limit of 8192 alive goroutines, and with 4 millions we clearly exceed it.
+Instead let's use the benchmarks I wrote, which generate smaller images.
+
+Let's run it with and without the data race detector to compare the performances.
+
+```bash
+$ go test -bench=Pixel
+goos: darwin
+goarch: amd64
+pkg: github.com/campoy/justforfunc/22-perf
+BenchmarkPixel/64-8                 2000           1003116 ns/op
+BenchmarkPixel/128-8                 300           5003258 ns/op
+BenchmarkPixel/256-8                 100          19693236 ns/op
+BenchmarkPixel/512-8                  20          86670280 ns/op
+PASS
+ok      github.com/campoy/justforfunc/22-perf   7.894s
+
+$ go test -bench=Pixel -race
+go test -bench=Pixel -race
+goos: darwin
+goarch: amd64
+pkg: github.com/campoy/justforfunc/22-perf
+BenchmarkPixel/64-8                   10         181391401 ns/op
+BenchmarkPixel/128-8                   2         729349776 ns/op
+BenchmarkPixel/256-8                   1        2923114988 ns/op
+BenchmarkPixel/512-8                   1        12477182754 ns/op
+PASS
+ok      github.com/campoy/justforfunc/22-perf   20.626s
+```
+
+There's a clear difference, but the good news it's it didn't panic. This means
+no data races were detected. There might be some data race, but the code we just
+run didn't cause any.
+
+In a previous version of the code (see the video for more details) the anonymous function
+in the go routine didn't get any parameters. This caused a data race on both `i` and `j`.
+
+```go
+func createPixel(width, height int) image.Image {
+	m := image.NewGray(image.Rect(0, 0, width, height))
+	var w sync.WaitGroup
+	w.Add(width * height)
+	for i := 0; i < width; i++ {
+		for j := 0; j < height; j++ {
+			go func() {
+				m.Set(i, j, pixel(i, j, width, height))
+				w.Done()
+			}()
+		}
+	}
+	w.Wait()
+	return m
+}
+```
+
+It's also worth mentioning that `m.Set` being called from different go routines is not a
+problem since we are modifying different positions in a preallocated slice.
+
 ## Finding compromise in between too few and too many
 
-Ok, so one goroutine is too many, but four millions is too much. Let's go right in between and
-go with one goroutine per row. This time we'll call `createRow` which creates a goroutine per
-row, so "only" 2048 of them.
+Ok, so one goroutine is too few, but four millions is too many. Let's go right in between and
+go with one goroutine per column. This time we'll call `createCol` which creates a goroutine per
+column, so "only" 2048 of them.
 
-[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createRow/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createCol/ /^}/)
 ```go
-func createRow(width, height int) image.Image {
+func createCol(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 	var w sync.WaitGroup
 	w.Add(width)
@@ -373,22 +446,22 @@ Ok, we went from almost five seconds, to three, and now less than a second!
 What does the trace look like? Let's check it out.
 
 ```bash
-$ time ./mandelbrot > row.trace
-./mandelbrot > row.trace  4.79s user 0.02s system 498% cpu 0.966 total
+$ time ./mandelbrot > col.trace
+./mandelbrot > col.trace  4.79s user 0.02s system 498% cpu 0.966 total
 
-$ go tool trace row.trace
+$ go tool trace col.trace
 2017/10/23 11:41:29 Parsing trace...
 2017/10/23 11:41:29 Serializing trace...
 2017/10/23 11:41:30 Splitting trace...
 2017/10/23 11:41:30 Opening browser
 ```
 
-![row trace](img/go-tracer/row.png)
+![col trace](img/tracer/col.png)
 
 That looks pretty good! We can see that the CPUs are pretty busy first, then we move to one goroutine
 to encode the image into the file. Let's zoom in, though (feeling like CSI already?).
 
-![row trace](img/go-tracer/row-zoom.png)
+![col trace](img/tracer/col-zoom.png)
 
 That looks very good! But, can we do better?
 
@@ -407,8 +480,8 @@ func createWorkers(width, height int) image.Image {
 	c := make(chan px)
 
 	var w sync.WaitGroup
-	w.Add(8)
-	for i := 0; i < 8; i++ {
+	for n := 0; n < numWorkers; n++ {
+		w.Add(1)
 		go func() {
 			for px := range c {
 				m.Set(px.x, px.y, pixel(px.x, px.y, width, height))
@@ -455,18 +528,18 @@ $ go tool trace workers.trace
 
 This is again incredibly slow, so clearly we're logging many events. What are those events?
 
-![workers trace](img/go-tracer/workers.png)
+![workers trace](img/tracer/workers.png)
 
 Again it seems quite good from far away, but when you zoom in it looks quite different.
 
-![workers trace](img/go-tracer/workers-zoom.png)
+![workers trace](img/tracer/workers-zoom.png)
 
 Where is the contention coming from now? The runtime should be totally fine with eight goroutines,
 2048 was not too many. Well, let's go back to the menu where we clicked "View Trace" but instead
 let's click `Synchronization blocking profile`. You'll see a graph generated by our old friend `pprof`.
 In this graph we can see the contention due to synchronization primitives such as channels and mutexes.
 
-![workers sync](img/go-tracer/workers-sync.png)
+![workers sync](img/tracer/workers-sync.png)
 
 So our goroutines spent almost 48 seconds blocked receiving from a channel!
 That's, obviously, a problem.
@@ -499,7 +572,7 @@ $ time ./mandelbrot
 ./mandelbrot  8.55s user 0.37s system 494% cpu 1.804 total
 ```
 
-It is much faster than before but still not nearly as fast as creating one goroutine per row.
+It is much faster than before but still not nearly as fast as creating one goroutine per column.
 
 The tracer shows that we still have some contention, and pprof quantifies it to 613ms.
 
@@ -514,7 +587,7 @@ $ go tool trace workers-buf.trace
 2017/10/23 12:04:51 Opening browser
 ```
 
-![workers buffered sync](img/go-tracer/workers-buf-sync.png)
+![workers buffered sync](img/tracer/workers-buf-sync.png)
 
 ## Compromises
 
@@ -522,18 +595,18 @@ Sending values through channels has a very low cost, but it does have a cost and
 over 4 million times in this program.
 
 It seems like a good idea to limit this cost by creating fewer tasks. How can we even do that?
-Each task should be larger: let's create a task per row.
+Each task should be larger: let's create a task per column.
 
-[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createRowWorkers/ /^}/)
+[embedmd]:# (../../../../justforfunc/22-perf/main.go /func createColWorkers/ /^}/)
 ```go
-func createRowWorkers(width, height int) image.Image {
+func createColWorkers(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 
 	c := make(chan int)
 
 	var w sync.WaitGroup
-	w.Add(8)
-	for i := 0; i < 8; i++ {
+	for n := 0; n < numWorkers; n++ {
+		w.Add(1)
 		go func() {
 			for i := range c {
 				for j := 0; j < height; j++ {
@@ -561,7 +634,7 @@ $ time ./mandelbrot
 ./mandelbrot  4.72s user 0.04s system 495% cpu 0.962 total
 ```
 
-Pretty fast! And if we added a buffer to the channel, as shown in `createRowWorkersBuffered`?
+Pretty fast! And if we added a buffer to the channel, as shown in `createColWorkersBuffered`?
 
 ```bash
 $ time ./mandelbrot
@@ -572,7 +645,7 @@ Just a tiny bit better.
 
 # Conclusion
 
-So, it seems like creating one goroutine per row is the fastest option, but probably this changes
+So, it seems like creating one goroutine per column is the fastest option, but probably this changes
 given different image sizes. It is time to write benchmarks (they're already written in the repo!),
 look at the traces and pprof data and make sensible and informed decisions.
 
