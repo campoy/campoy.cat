@@ -3,6 +3,10 @@ languageCode = "en-us"
 title = "Francesc Campoy Flores"
 theme = "introduction"
 
+PygmentsCodeFences = true
+PygmentsStyle = "monokai"
+
+
 [permalinks]
 fixed = ":title/"
 blog  = "blog/:filename/"
@@ -52,3 +56,5 @@ project3link    = "https://github.com/campoy/embedmd"
 project3img     = "img/embedmd.png"
 project3title   = "embedmd"
 project3desc    = "A simple tool that embeds code into your Markdown files from any other files, and keeps everything in sync."
+
+

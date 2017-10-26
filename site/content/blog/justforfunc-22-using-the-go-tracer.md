@@ -8,20 +8,14 @@ As an experiment, this is the first blog post form of a
 [justforfunc](https://www.youtube.com/watch?v=ySy3sR1LFCQ) episode,
 you can also watch the corresponding episode.
 
-<div style="text-align:center">
-    <a href="https://www.youtube.com/watch?v=ySy3sR1LFCQ&feature=youtu.be&list=PL6">
-        <img src="https://img.youtube.com/vi/ySy3sR1LFCQ/0.jpg" alt="justforfunc 22: using the Go execution tracer">
-        <p>justforfunc 22: using the Go execution tracer</p>
-    </a>
-</div>
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ySy3sR1LFCQ" frameborder="0" allowfullscreen></iframe>
 
 ## The initial program
 
 We start with a very simple program, copied partly from [Wikipedia](https://en.wikipedia.org/wiki/Mandelbrot_set), that creates a Mandelbrot fractal by
 first computing the color of each pixel, and then writing the corresponding image to a PNG file.
 
-```go
+{{< highlight go >}}
 func main() {
 	f, err := os.Create(output)
 	if err != nil {
@@ -34,13 +28,13 @@ func main() {
 		log.Fatal(err)
 	}
 }
-```
+{{</ highlight >}}
 
 In this first iteration `createSeq`, which calls `pixel`
 to compute the color of each pixel, one after the other.
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func createSeq/ /^}/)
-```go
+{{< highlight go >}}
 func createSeq(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 	for i := 0; i < width; i++ {
@@ -50,7 +44,7 @@ func createSeq(width, height int) image.Image {
 	}
 	return m
 }
-```
+{{</ highlight >}}
 
 Finally, the part that is basically extracted from Wikipedia allows
 us to compute the color of a given pixel. The `complexity` value
@@ -58,7 +52,7 @@ determines how complex the fractal gets, values from 4 to 2048 give
 various and interesting effects. Play with this!
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func pixel/ /^}/)
-```go
+{{< highlight go >}}
 func pixel(i, j, width, height int) color.Color {
 	// Play with this constant to increase the complexity of the fractal.
 	// In the justforfunc.com video this was set to 4.
@@ -76,17 +70,17 @@ func pixel(i, j, width, height int) color.Color {
 
 	return color.Gray{uint8(x)}
 }
-```
+{{</ highlight >}}
 
 ## How fast is it?
 
 At this point our program runs and creates a cool fractal, and it takes
 (in my laptop) around 4.7 seconds.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot
 ./mandelbrot  4.44s user 0.01s system 99% cpu 4.466 total
-```
+{{</ highlight >}}
 
 The resulting image is this cool fractal.
 
@@ -100,18 +94,18 @@ package in the standard library.
 
 Simply adding two lines of code at the beginning of the `main` function.
 
-```go
+{{< highlight go >}}
 	pprof.StartCPUProfile(os.Stdout)
 	defer pprof.StopCPUProfile()
-```
+{{</ highlight >}}
 
 Now if we run the program again it will output `pprof` profiling
 information into the standard output.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot > cpu.pprof
 ./mandelbrot > cpu.pprof  5.25s user 0.02s system 96% cpu 5.469 total
-```
+{{</ highlight >}}
 
 Interestingly, adding `pprof` has not slowed the program much!
 And in exchange of that temporary performance hit we get much
@@ -119,19 +113,19 @@ visibility on what the program spent its time on.
 
 Let's open pprof and see what it spent its time on.
 
-```bash
+{{< highlight bash >}}
 $ go tool pprof cpu.pprof
 Type: cpu
 Time: Oct 23, 2017 at 11:04am (CEST)
 Duration: 5.45s, Total samples = 4.53s (83.13%)
 Entering interactive mode (type "help" for commands, "o" for options)
 (pprof)
-```
+{{</ highlight >}}
 
 We can now list how much time we spend in each function we call
 with `list`.
 
-```bash
+{{< highlight bash >}}
 (pprof) list main.main
 Total: 4.53s
 ROUTINE ======================== main.main in /Users/campoy/src/github.com/campoy/justforfunc/22-perf/main.go
@@ -149,11 +143,11 @@ ROUTINE ======================== main.main in /Users/campoy/src/github.com/campo
          .          .     49:}
          .          .     50:
          .          .     51:// createSeq fills one pixel at a time.
-```
+{{</ highlight >}}
 
 Ok, so it seems we spent most of the time in `createSeq`, makes sense!
 
-```bash
+{{< highlight bash >}}
 (pprof) list main.createSeq
 Total: 4.53s
 ROUTINE ======================== main.createSeq in /Users/campoy/src/github.com/campoy/justforfunc/22-perf/main.go
@@ -169,11 +163,11 @@ ROUTINE ======================== main.createSeq in /Users/campoy/src/github.com/
          .          .     59:   return m
          .          .     60:}
          .          .     61:
-```
+{{</ highlight >}}
 
 Great, again most of the time is in the line calling `pixel`, and what does `pixel` do?
 
-```bash
+{{< highlight bash >}}
 (pprof) list main.pixel
 Total: 4.53s
 ROUTINE ======================== main.pixel in /Users/campoy/src/github.com/campoy/justforfunc/22-perf/main.go
@@ -195,7 +189,7 @@ ROUTINE ======================== main.pixel in /Users/campoy/src/github.com/camp
          .          .    223:
          .      1.85s    224:   return color.Gray{uint8(x)}
          .          .    225:}
-```
+{{</ highlight >}}
 
 Ok, so we spend a decent amount of time computing multiplications in that loop, also a lot
 of time allocating pixels in line 224.
@@ -231,14 +225,14 @@ to see the "empty" space in our program.
 Let's create a trace from this program, by simply replacing our `pprof` calls by calls to the `runtime/trace`
 package also in the standard library.
 
-```go
+{{< highlight go >}}
 	trace.Start(os.Stdout)
 	defer trace.Stop()
-```
+{{</ highlight >}}
 
 Then we can execute the program again an visualize the trace with `go tool trace`.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot > seq.trace
 ./mandelbrot > seq.trace  5.11s user 0.04s system 99% cpu 5.176 total
 
@@ -247,7 +241,7 @@ $ go tool seq.trace
 2017/10/23 11:16:55 Serializing trace...
 2017/10/23 11:16:55 Splitting trace...
 2017/10/23 11:16:55 Opening browser
-```
+{{</ highlight >}}
 
 This will open a browser and display a webpage that, among others, has a link to `View Trace`. Click there and you should be something like this:
 
@@ -271,7 +265,7 @@ create over four million goroutines. We say goroutines are cheap ... so let's se
 The function that creates a goroutine per pixel is called `createPixel`:
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func createPixel/ /^}/)
-```go
+{{< highlight go >}}
 func createPixel(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 	var w sync.WaitGroup
@@ -287,15 +281,15 @@ func createPixel(width, height int) image.Image {
 	w.Wait()
 	return m
 }
-```
+{{</ highlight >}}
 
 Ok, so first of all let's run it without the tracer to see how fast it is and compare it to the sequential
 option.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot
 ./mandelbrot  13.70s user 1.53s system 471% cpu 3.234 total
-```
+{{</ highlight >}}
 
 Wow, it's actually faster! It used much more CPU time (13.70s) but since it distributed it so efficiently
 across our eight CPUs, the total time it spent running was only 3.2 seconds.
@@ -304,10 +298,10 @@ Victory! Right?
 
 Well, let's create a trace and see what it looks like.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot > px.trace
 ./mandelbrot > px.trace  25.64s user 5.46s system 502% cpu 6.184 total
-```
+{{</ highlight >}}
 
 Wow, we spent almost twice of CPU cycles than before! Why is this? Well, the tracer has a performance cost,
 and in this case we're logging each and every goroutine we create. This, by itself, might point to problem
@@ -315,13 +309,13 @@ in our solution.
 
 Let's open the trace, and be warned it's not going to be fast!
 
-```bash
+{{< highlight bash >}}
 $ go tool trace px.trace
 2017/10/23 11:29:17 Parsing trace...
 2017/10/23 11:29:58 Serializing trace...
 2017/10/23 11:30:13 Splitting trace...
 2017/10/23 11:30:49 Opening browser
-```
+{{</ highlight >}}
 
 The trace has been split into many pieces to avoid overloading the browser. Let's open one somewhere around
 the center. This, again, will be quite slow. Patience is your friend.
@@ -344,19 +338,19 @@ The easiest way to show that there are no obvious data races is by using the dat
 To do so you can simply add `-race` to the `go build|run|test` command. If you try it with the
 program as is it will fail:
 
-```bash
+{{< highlight bash >}}
 $ go build -o mandelbrot -race
 $ time ./mandelbrot
 race: limit on 8192 simultaneously alive goroutines is exceeded, dying
 ./mandelbrot  0.49s user 1.00s system 99% cpu 1.483 total
-```
+{{</ highlight >}}
 
 There's a limit of 8192 alive goroutines, and with 4 millions we clearly exceed it.
 Instead let's use the benchmarks I wrote, which generate smaller images.
 
 Let's run it with and without the data race detector to compare the performances.
 
-```bash
+{{< highlight bash >}}
 $ go test -bench=Pixel
 goos: darwin
 goarch: amd64
@@ -379,7 +373,7 @@ BenchmarkPixel/256-8                   1        2923114988 ns/op
 BenchmarkPixel/512-8                   1        12477182754 ns/op
 PASS
 ok      github.com/campoy/justforfunc/22-perf   20.626s
-```
+{{</ highlight >}}
 
 There's a clear difference, but the good news it's it didn't panic. This means
 no data races were detected. There might be some data race, but the code we just
@@ -388,7 +382,7 @@ run didn't cause any.
 In a previous version of the code (see the video for more details) the anonymous function
 in the go routine didn't get any parameters. This caused a data race on both `i` and `j`.
 
-```go
+{{< highlight go >}}
 func createPixel(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 	var w sync.WaitGroup
@@ -404,7 +398,7 @@ func createPixel(width, height int) image.Image {
 	w.Wait()
 	return m
 }
-```
+{{</ highlight >}}
 
 It's also worth mentioning that `m.Set` being called from different go routines is not a
 problem since we are modifying different positions in a preallocated slice.
@@ -416,7 +410,7 @@ go with one goroutine per column. This time we'll call `createCol` which creates
 column, so "only" 2048 of them.
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func createCol/ /^}/)
-```go
+{{< highlight go >}}
 func createCol(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 	var w sync.WaitGroup
@@ -432,20 +426,20 @@ func createCol(width, height int) image.Image {
 	w.Wait()
 	return m
 }
-```
+{{</ highlight >}}
 
 As before, let's run it without trace first to see whether we improve the 3.2 seconds we got before.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot
 ./mandelbrot  4.90s user 0.02s system 499% cpu 0.985 total
-```
+{{</ highlight >}}
 
 Ok, we went from almost five seconds, to three, and now less than a second!
 
 What does the trace look like? Let's check it out.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot > col.trace
 ./mandelbrot > col.trace  4.79s user 0.02s system 498% cpu 0.966 total
 
@@ -454,7 +448,7 @@ $ go tool trace col.trace
 2017/10/23 11:41:29 Serializing trace...
 2017/10/23 11:41:30 Splitting trace...
 2017/10/23 11:41:30 Opening browser
-```
+{{</ highlight >}}
 
 ![col trace](img/tracer/col.png)
 
@@ -472,7 +466,7 @@ number of workers (eight in this case) which fetch tasks from a channel. We also
 to make sure all workers are done before exiting.
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func createWorkers/ /^}/)
-```go
+{{< highlight go >}}
 func createWorkers(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 
@@ -499,7 +493,7 @@ func createWorkers(width, height int) image.Image {
 	w.Wait()
 	return m
 }
-```
+{{</ highlight >}}
 
 We have a smaller number of goroutines, but definitely enough of them to distribute across all processors.
 This should be faster, right?
@@ -508,14 +502,14 @@ Well, never trust your instincts when it comes to performance analysis.
 
 Let's run it and see, first without the tracer.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot
 ./mandelbrot  10.31s user 3.22s system 422% cpu 3.201 total
-```
+{{</ highlight >}}
 
 Ok, so this is not better than creating a pixel per goroutine! Why? Well, time to trace.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot > workers.trace
 ./mandelbrot > workers.trace  30.86s user 13.88s system 383% cpu 11.660 total
 
@@ -524,7 +518,7 @@ $ go tool trace workers.trace
 2017/10/23 11:49:52 Serializing trace...
 2017/10/23 11:50:02 Splitting trace...
 2017/10/23 11:50:49 Opening browser
-```
+{{</ highlight >}}
 
 This is again incredibly slow, so clearly we're logging many events. What are those events?
 
@@ -555,28 +549,28 @@ You don't trust me? You don't need to. Let's modify the program to use a channel
 of a size that allows us to fit all of the pixels.
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func createWorkersBuffered/ /make\(chan.*/)
-```go
+{{< highlight go >}}
 func createWorkersBuffered(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 
 	type px struct{ x, y int }
 	c := make(chan px, width*height)
-```
+{{</ highlight >}}
 
 The rest of the function is exactly as the previous one.
 
 Will this make our program faster? Let's see!
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot
 ./mandelbrot  8.55s user 0.37s system 494% cpu 1.804 total
-```
+{{</ highlight >}}
 
 It is much faster than before but still not nearly as fast as creating one goroutine per column.
 
 The tracer shows that we still have some contention, and pprof quantifies it to 613ms.
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot > workers-buf.trace
 ./mandelbrot > workers-buf.trace  8.06s user 0.29s system 542% cpu 1.539 total
 
@@ -585,7 +579,7 @@ $ go tool trace workers-buf.trace
 2017/10/23 12:04:51 Serializing trace...
 2017/10/23 12:04:51 Splitting trace...
 2017/10/23 12:04:51 Opening browser
-```
+{{</ highlight >}}
 
 ![workers buffered sync](img/tracer/workers-buf-sync.png)
 
@@ -598,7 +592,7 @@ It seems like a good idea to limit this cost by creating fewer tasks. How can we
 Each task should be larger: let's create a task per column.
 
 [embedmd]:# (../../../../justforfunc/22-perf/main.go /func createColWorkers/ /^}/)
-```go
+{{< highlight go >}}
 func createColWorkers(width, height int) image.Image {
 	m := image.NewGray(image.Rect(0, 0, width, height))
 
@@ -625,21 +619,21 @@ func createColWorkers(width, height int) image.Image {
 	w.Wait()
 	return m
 }
-```
+{{</ highlight >}}
 
 How much faster is this?
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot
 ./mandelbrot  4.72s user 0.04s system 495% cpu 0.962 total
-```
+{{</ highlight >}}
 
 Pretty fast! And if we added a buffer to the channel, as shown in `createColWorkersBuffered`?
 
-```bash
+{{< highlight bash >}}
 $ time ./mandelbrot
 ./mandelbrot  4.74s user 0.04s system 513% cpu 0.931 total
-```
+{{</ highlight >}}
 
 Just a tiny bit better.
 
