@@ -12,7 +12,7 @@
 
     </div><!-- End Nav bar -->
 
-    <div class="container fade-in two"><!-- Begin blog title container -->
+    <div class="container fade-in two blog-post"><!-- Begin blog title container -->
         <h2 class="title is-1 top-pad strong-post-title">{{ .Title }}</h2>
             <div class="post-data">
                 {{ .Date.Format .Site.Params.dateform }} |
@@ -47,7 +47,7 @@
             
     </div><!-- End blog title container -->
 
-    <div class="container markdown fade-in two top-pad"><!-- Begin blog post content -->
+    <div class="container markdown fade-in two top-pad blog-post"><!-- Begin blog post content -->
         {{ .Content }}
     </div><!-- End blog post content -->
             

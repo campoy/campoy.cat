@@ -2,6 +2,7 @@
 date = "2017-10-30T00:00:00-00:00"
 title = "Using the Go execution tracer to speed up fractal rendering"
 tags = ["justforfunc", "performance", "go"]
+draft = true
 +++
 
 As an experiment, this is the first blog post form of a
