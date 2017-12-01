@@ -8,50 +8,51 @@
 
 {{ partial "header.html" . }}
 
-<div class="section" id="top"> <!-- Where all the awesome begins -->
+<div class="section" id="top">
+    <!-- Where all the awesome begins -->
 
-{{ partial "navigation.html" . }}
+    {{ partial "navigation.html" . }}
 
     <!-- Everything below fades in two! -->
     <div class="section no-padding fade-in three">
 
-    <div class="container"><!-- Begin Blog container -->
+        <div class="container">
+            <!-- Begin Blog container -->
 
-    {{ if .Site.Params.showlatest }}
-    <h2 class="title is-2 top-pad">Latest Posts</h2>
-        {{ range first 3 .Data.Pages.ByPublishDate }} 
-        <div class="summary">{{ .Date.Format .Site.Params.dateform }}
-            <h3 class="title is-3 strong-post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+            {{ if .Site.Params.showlatest }}
+            <h2 class="title is-2 top-pad">Latest Posts</h2>
+            {{ range first 3 .Data.Pages.ByPublishDate.Reverse }}
+            <div class="summary">{{ .Date.Format .Site.Params.dateform }}
+                <h3 class="title is-3 strong-post-title">
+                    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                </h3>
                 <div class="markdown">
-                {{ .Summary }}
-                {{ if .Truncated }}
-                <a href="{{ .RelPermalink }}">...Read More</a>
-                {{ end }}
+                    {{ .Summary }} {{ if .Truncated }}
+                    <a href="{{ .RelPermalink }}">...Read More</a>
+                    {{ end }}
                 </div>
+            </div>
+            {{ end }} {{ end }}
+
+            <h2 class="title is-2 top-pad">All Posts</h2>
+            <ul>
+                {{ range .Data.Pages.ByPublishDate }} {{ if eq .Section "blog" }} {{ partial "li.html" . }} {{ end }} {{ end }}
+            </ul>
+
         </div>
-        {{ end }}
-    {{ end }}
+        <!-- End Blog container -->
 
-    <h2 class="title is-2 top-pad">All Posts</h2>
-        <ul>
-        {{ range .Data.Pages.ByPublishDate }}
-            {{ if eq .Section "blog" }}
-                {{ partial "li.html" . }}
-            {{ end }}
-        {{ end }}
-        </ul>
+        <div class="container has-text-centered top-pad">
+            <hr>
+            <a href="{{ .Permalink }}#top">TOP</a>
+            <hr>
+        </div>
 
-    </div><!-- End Blog container -->
-
-<div class="container has-text-centered top-pad">
-<hr>
-<a href="{{ .Permalink }}#top">TOP</a>
-<hr>
+        {{ partial "footer.html" . }}
+    </div>
+    <!-- End fade in two -->
 </div>
-
-{{ partial "footer.html" . }}
-</div><!-- End fade in two -->
-</div><!-- End parent section -->
+<!-- End parent section -->
 
 <!-- Cool scroll effect from this guy: https://gist.github.com/flesler/ -->
 <!-- Include jQuery from somewhere, must use version 1.8 or above -->
@@ -60,12 +61,12 @@
 <script type="application/javascript" src="//cdn.jsdelivr.net/jquery.scrollto/2.1.2/jquery.scrollTo.min.js"></script>
 <!-- Initialize the plugin, the contents of the script can be inlined here, of course -->
 <script>
-  // Bind to the click of all links with a #hash in the href
-  $('a[href^="{{ .Permalink }}#"]').click(function(e) {
-    // Prevent the jump and the #hash from appearing on the address bar
-    e.preventDefault();
-    // Scroll the window, stop any previous animation, stop on user manual scroll
-    // Check https://github.com/flesler/jquery.scrollTo for more customizability
-    $(window).stop(true).scrollTo(this.hash, {duration:500, interrupt:false});
-  });
-  </script>
+    // Bind to the click of all links with a #hash in the href
+    $('a[href^="{{ .Permalink }}#"]').click(function (e) {
+        // Prevent the jump and the #hash from appearing on the address bar
+        e.preventDefault();
+        // Scroll the window, stop any previous animation, stop on user manual scroll
+        // Check https://github.com/flesler/jquery.scrollTo for more customizability
+        $(window).stop(true).scrollTo(this.hash, { duration: 500, interrupt: false });
+    });
+</script>
