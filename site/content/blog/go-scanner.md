@@ -41,7 +41,7 @@ of rules of what is a valid program. These rules look something like:
 IfStmt = "if" [ SimpleStmt ";" ] Expression Block [ "else" ( IfStmt | Block ) ] .
 {{</ highlight >}}
 
-This rule tells use what an `if` statement looks like in Go. The `"if"`, `";"`,
+This rule tells us what an `if` statement looks like in Go. The `"if"`, `";"`,
 and `"else"` pieces are keywords that help us figure out the structure of the
 program, while `Expression Block`, `SimpleStmt`, etc are other rules.
 
