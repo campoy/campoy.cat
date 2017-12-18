@@ -10,7 +10,8 @@ justforfunc which you can watch right below.
 
 ### Previously in justforfunc
 
-In a [previous post](TODO), we used the `go/scanner` package in Go's
+In a [previous post](https://medium.com/@francesc/whats-the-most-common-identifier-in-go-s-stdlib-e468f3c9c7d9),
+we used the `go/scanner` package in Go's
 standard library to identify which was the most common identifier in
 the standard library itself.
 
@@ -627,7 +628,7 @@ therefore ignoring constants, types, and other kind of identifiers.
 THen, for each value declared, we'll check whether it's a global or local
 declaration, and count them accordingly and ignoring `_`.
 
-The whole program is available [here](TODO).
+The whole program is available [here](https://github.com/campoy/justforfunc/blob/master/25-go-parser/main.go).
 
 Executing the program will give us this result:
 
