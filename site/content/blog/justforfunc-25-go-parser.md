@@ -1,10 +1,11 @@
 +++
 title = "Understanding Go programs with go/parser"
-date = "2017-12-18T11:00:02-08:00"
+date = "2017-12-18T00:12:00+01:00"
 +++
 
-This blog post describes the same techniques used during episode 25 of
-justforfunc which you can watch right below.
+This blog post describes the same techniques used during
+[episode 25 of justforfunc](https://www.youtube.com/watch?v=YRWCa84pykM)
+which you can watch right below.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/YRWCa84pykM" frameborder="0" allowfullscreen></iframe>
 
