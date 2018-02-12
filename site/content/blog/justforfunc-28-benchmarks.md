@@ -8,9 +8,9 @@ date = "2018-02-12T00:12:00+01:00"
 This blog post is complementary to [episode 27 of justforfunc](https://www.youtube.com/watch?v=t9bEg2A4jsw)
 which you can watch right below.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/TODO" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=t9bEg2A4jsw" frameborder="0" allowfullscreen></iframe>
 
-In the [previous blog post](TODO) I discussed two different ways of merging
+In the [previous blog post](https://campoy.cat/blog/justforfunc-27-merging-chans/) I discussed two different ways of merging
 n channels in Go, but we did not discuss which ones was faster.
 In the meanwhile a third way of merging channels was proposed in a YouTube comment.
 
@@ -22,6 +22,8 @@ of view, analyzed using benchmarks.
 Two episodes ago we discussed how two channels could be merged, using a single goroutine
 and nil channels. A [justforfunc](https://justforfunc.com) viewer proposed a way to use
 this function and recursion to provide a way to merge n channels.
+
+![using a binary tree to merge N channels](/img/benchmarks/tree.png)
 
 The solution is quite smart. If we have:
 
