@@ -1,4 +1,4 @@
-baseURL = "https://campoy.cat/"
+baseURL = "http://www.campoy.cat/"
 languageCode = "en-us"
 title = "Francesc Campoy Flores"
 theme = "introduction"
