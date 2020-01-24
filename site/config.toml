@@ -13,6 +13,7 @@ blog  = "blog/:filename/"
 
 [params]
 author = "FrancescCampoy Flores"
+email = "francesc@campoy.cat"
 firstname = "Francesc"
 tagline = "Gopher, Developer Advocate, Good Guy"
 avatar = "img/profile.jpg"
