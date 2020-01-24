@@ -1,0 +1,7 @@
+[[redirects]]
+  from = "/bio"
+  to = "https://docs.google.com/document/d/1iyZ5GK5YJ7KTEwwd0OjqECT8ip4zC3WDZPpFkY31Cfg/edit?usp=sharing"
+  status = 301
+  force = false
+  query = {path = ":path"}
+  conditions = {Language = ["en"], Country = ["US"], Role = ["admin"]}
