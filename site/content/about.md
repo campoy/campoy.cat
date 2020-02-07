@@ -3,11 +3,11 @@ date = "2016-01-24T10:00:00-07:00"
 title = "about"
 +++
 
-I'm the VP of Product and Developer Relations at [Dgraph Labs](https://dgraph.io).
-
 I am a Software Engineer with a passion for Developer Experience,
 Product Management, and Developer Relations. I love building tools
 that make developers more productive and happier.
+
+Until quite recently, I was the VP of Product and Developer Relations at [Dgraph Labs](https://dgraph.io).
 
 Previously, I was a Developer Advocate for the
 [Go team](https://go.dev) at [Google](https://google.com) and for
